@@ -6,6 +6,22 @@
 #include <Arduino_JSON.h>
 #include <AsyncElegantOTA.h>
 
+// i2s lib
+//#include <SPIFFS.h>
+#include "WAVFileReader.h"
+#include "SinWaveGenerator.h"
+#include "I2SOutput.h"
+#define AmpSDn_pin 19
+i2s_pin_config_t i2sPins = {
+    .bck_io_num = GPIO_NUM_26,
+    .ws_io_num = GPIO_NUM_25,
+    .data_out_num = GPIO_NUM_33,
+    .data_in_num = -1};
+
+I2SOutput *output;
+SampleSource *sampleSource;
+//end i2s lib
+
 // Replace with your network credentials
 const char* ssid = "Kozaki_WiFi";
 const char* password = "0676181665";
@@ -20,7 +36,7 @@ AsyncWebSocket ws("/ws");
 #define NUM_OUTPUTS  4
 
 // Assign each GPIO to an output
-int outputGPIOs[NUM_OUTPUTS] = {2, 4, 12, 14};
+int outputGPIOs[NUM_OUTPUTS] = {22, 4, 12, 14};
 
 // Initialize SPIFFS
 void initSPIFFS() {
@@ -98,6 +114,7 @@ void setup(){
   // Serial port for debugging purposes
   Serial.begin(115200);
 
+
   // Set GPIOs as outputs
   for (int i =0; i<NUM_OUTPUTS; i++){
     pinMode(outputGPIOs[i], OUTPUT);
@@ -118,8 +135,55 @@ void setup(){
   
   // Start server
   server.begin();
+
+// i2s lib
+  pinMode(AmpSDn_pin, OUTPUT); // выключение усилителя/ включение (max98357a режим только левый канал)
+  digitalWrite(AmpSDn_pin, HIGH); 
+  Serial.println("Starting up");
+
+  //SPIFFS.begin();
+
+  Serial.println("Created sample source");
+
+  // sampleSource = new SinWaveGenerator(40000, 10000, 0.75);
+
+  // sampleSource = new WAVFileReader("/002.wav");
+
+  // Serial.println("Starting I2S Output");
+  // output = new I2SOutput();
+  // output->start(I2S_NUM_1, i2sPins, sampleSource);
+//end i2s lib
 }
 
 void loop() {
+//  sampleSource = new SinWaveGenerator(40000, 10000, 0.75);
+
+  sampleSource = new WAVFileReader("/002.wav");
+
+  Serial.println("Starting I2S Output");
+  output = new I2SOutput();
+  output->start(I2S_NUM_1, i2sPins, sampleSource);
+  int pin22_state = LOW;
+  int pin22_state_old = LOW;
+  while (true)
+  {
   ws.cleanupClients();
+
+    pin22_state = digitalRead(22);
+
+    if (pin22_state != pin22_state_old )
+    {
+      pin22_state_old = pin22_state;
+      if(pin22_state == HIGH)
+       {
+          i2s_stop(I2S_NUM_1);
+          output->m_sample_generator=
+       }
+        else
+       {
+          i2s_start(I2S_NUM_1);
+
+       }
+    }
+  }
 }
