@@ -46,6 +46,11 @@ void i2sWriterTask(void *param)
                         availableBytes -= bytesWritten;
                         buffer_position += bytesWritten;
                     }
+//                         i2s_stop(output->m_i2sPort);
+//                         vTaskDelay(20 / portTICK_PERIOD_MS);
+//                         // vTaskDelay(1000 / portTICK_PERIOD_MS);
+//                         i2s_start(output->m_i2sPort);
+// //                        vTaskDelay(5000 / portTICK_PERIOD_MS);
                 } while (bytesWritten > 0);
             }
         }
@@ -54,6 +59,8 @@ void i2sWriterTask(void *param)
 
 void I2SOutput::start(i2s_port_t i2sPort, i2s_pin_config_t &i2sPins, SampleSource *sample_generator)
 {
+    static int player_cmd = 0;
+    
     m_sample_generator = sample_generator;
     // i2s config for writing both channels of I2S
     i2s_config_t i2sConfig = {
@@ -61,6 +68,7 @@ void I2SOutput::start(i2s_port_t i2sPort, i2s_pin_config_t &i2sPins, SampleSourc
         .sample_rate = m_sample_generator->sampleRate(),
         .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,
         .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT,
+ //m_       .channel_format = I2S_CHANNEL_FMT_ALL_LEFT,
         .communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_I2S),
         .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
         .dma_buf_count = 4,
