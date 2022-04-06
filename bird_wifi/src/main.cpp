@@ -202,7 +202,7 @@ void loop() {
        {
 //        i2s_stop(I2S_NUM_1);
         delete sampleSource;
-        sampleSource = new WAVFileReader("/002.wav");
+        sampleSource = new WAVFileReader("/001.wav");
         output->start(I2S_NUM_1, i2sPins, sampleSource);
        }
     }
