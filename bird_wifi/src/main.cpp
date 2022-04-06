@@ -109,7 +109,6 @@ void initWebSocket() {
     ws.onEvent(onEvent);
     server.addHandler(&ws);
 }
-
 void setup(){
   // Serial port for debugging purposes
   Serial.begin(115200);
@@ -158,13 +157,15 @@ void setup(){
 void loop() {
 //  sampleSource = new SinWaveGenerator(40000, 10000, 0.75);
 
-  sampleSource = new WAVFileReader("/002.wav");
+  sampleSource = new WAVFileReader("/001.wav");
 
   Serial.println("Starting I2S Output");
   output = new I2SOutput();
   output->start(I2S_NUM_1, i2sPins, sampleSource);
-  int pin22_state = LOW;
+  int pin22_state = LOW; // play/pause
   int pin22_state_old = LOW;
+  int pin4_state = LOW; // file1 / file2
+  int pin4_state_old = LOW;
   while (true)
   {
   ws.cleanupClients();
@@ -177,7 +178,6 @@ void loop() {
       if(pin22_state == HIGH)
        {
           i2s_stop(I2S_NUM_1);
-          output->m_sample_generator=
        }
         else
        {
@@ -185,5 +185,27 @@ void loop() {
 
        }
     }
+
+    pin4_state = digitalRead(4);
+
+    if (pin4_state != pin4_state_old )
+    {
+      pin4_state_old = pin4_state;
+      if(pin4_state == HIGH)
+       {
+//        i2s_stop(I2S_NUM_1);
+        delete sampleSource;
+        sampleSource = new WAVFileReader("/001.wav");
+        output->start(I2S_NUM_1, i2sPins, sampleSource);
+       }
+        else
+       {
+//        i2s_stop(I2S_NUM_1);
+        delete sampleSource;
+        sampleSource = new WAVFileReader("/002.wav");
+        output->start(I2S_NUM_1, i2sPins, sampleSource);
+       }
+    }
+
   }
 }

@@ -46,11 +46,6 @@ void i2sWriterTask(void *param)
                         availableBytes -= bytesWritten;
                         buffer_position += bytesWritten;
                     }
-//                         i2s_stop(output->m_i2sPort);
-//                         vTaskDelay(20 / portTICK_PERIOD_MS);
-//                         // vTaskDelay(1000 / portTICK_PERIOD_MS);
-//                         i2s_start(output->m_i2sPort);
-// //                        vTaskDelay(5000 / portTICK_PERIOD_MS);
                 } while (bytesWritten > 0);
             }
         }
@@ -75,6 +70,15 @@ void I2SOutput::start(i2s_port_t i2sPort, i2s_pin_config_t &i2sPins, SampleSourc
         .dma_buf_len = 1024};
 
     m_i2sPort = i2sPort;
+
+//m_
+         if( m_i2sWriterTaskHandle != NULL ) //удаляем задачу если она есть , таким образом новый файл
+     {
+         i2s_driver_uninstall(m_i2sPort);
+         vTaskDelete( m_i2sWriterTaskHandle );
+     }
+//_m
+
     //install and start i2s driver
     i2s_driver_install(m_i2sPort, &i2sConfig, 4, &m_i2sQueue);
     // set up the i2s pins
@@ -82,6 +86,7 @@ void I2SOutput::start(i2s_port_t i2sPort, i2s_pin_config_t &i2sPins, SampleSourc
     // clear the DMA buffers
     i2s_zero_dma_buffer(m_i2sPort);
     // start a task to write samples to the i2s peripheral
-    TaskHandle_t writerTaskHandle;
-    xTaskCreate(i2sWriterTask, "i2s Writer Task", 4096, this, 1, &writerTaskHandle);
+   // TaskHandle_t writerTaskHandle;
+
+    xTaskCreate(i2sWriterTask, "i2s Writer Task", 4096, this, 1, &m_i2sWriterTaskHandle);
 }
