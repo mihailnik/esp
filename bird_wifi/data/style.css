@@ -45,13 +45,13 @@ body {
 .switch input {
     display: none
 }
-.slider {
+.tg_slider {
     position: absolute; 
     top: 0; left: 0; right: 0; bottom: 0; 
     background-color: #ccc; 
     border-radius: 50px
 }
-.slider:before {
+.tg_slider:before {
     position: absolute; 
     content: ""; 
     height: 52px; 
@@ -63,10 +63,10 @@ body {
     transition: .4s;
     border-radius: 50px;
 }
-input:checked+.slider {
+input:checked+.tg_slider{
     background-color: #b30000;
 }
-input:checked+.slider:before {
+input:checked+.tg_slider:before {
     -webkit-transform: translateX(52px);
     -ms-transform: translateX(52px); 
     transform: translateX(52px);
