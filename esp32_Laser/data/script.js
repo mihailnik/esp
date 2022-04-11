@@ -16,6 +16,7 @@ function initWebSocket() {
 
 function onOpen(event) {
     console.log('Connection opened');
+    getValues();
     websocket.send("states");
 }
   
@@ -41,7 +42,22 @@ function onMessage(event) {
                     document.getElementById(output+"s").innerHTML = "OFF";
                 }
             }
+            var keys = Object.keys(myObj);
+
+            for (var i = 0; i < keys.length; i++){
+                var key = keys[i];
+                document.getElementById(key).innerHTML = myObj[key];
+                document.getElementById("slider"+ (i+1).toString()).value = myObj[key];
+            }
     console.log(event.data);
+}
+
+function updateSliderPWM(element) {
+    var sliderNumber = element.id.charAt(element.id.length-1);
+    var sliderValue = document.getElementById(element.id).value;
+    document.getElementById("sliderValue"+sliderNumber).innerHTML = sliderValue;
+    console.log(sliderValue);
+    websocket.send(sliderNumber+"s"+sliderValue.toString());
 }
 
 // Send Requests to Control GPIOs
