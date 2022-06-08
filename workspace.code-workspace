@@ -1,24 +1,12 @@
 {
 	"folders": [
 		{
-			"name": "e32i2s_saps",
-			"path": "e32i2s_saps"
-		},
-		{
 			"name": "bird_wifi",
 			"path": "bird_wifi"
 		},
 		{
-			"name": "e8266",
-			"path": "e8266"
-		},
-		{
-			"name": "e32_wifi",
-			"path": "e32_wifi"
-		},
-		{
-			"name": "esp32_Laser",
-			"path": "esp32_Laser"
+			"name": "01_ex_generic",
+			"path": "01_ex_generic"
 		}
 	],
 	"settings": {
