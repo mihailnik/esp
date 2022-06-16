@@ -3,10 +3,6 @@
 		{
 			"name": "bird_wifi",
 			"path": "bird_wifi"
-		},
-		{
-			"name": "01_ex_generic",
-			"path": "01_ex_generic"
 		}
 	],
 	"settings": {
